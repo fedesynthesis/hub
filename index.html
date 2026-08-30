@@ -1,14 +1,101 @@
-<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Anteprime hub</title>
-<style>*{margin:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}
-body{background:#f4f2ea;color:#201c17;min-height:100vh;display:flex;flex-direction:column;justify-content:center;gap:16px;padding:32px}
-h1{font-size:22px;font-weight:600;text-align:center}p{text-align:center;color:#7a746b;font-size:14px;margin-top:-8px}
-a{display:block;background:#fdfcf8;border:1px solid #e4e0d6;border-radius:18px;padding:20px;text-decoration:none;color:inherit;box-shadow:0 8px 22px -18px rgba(30,25,20,.5)}
-a b{font-size:17px}a span{display:block;color:#7a746b;font-size:13.5px;margin-top:4px}
-@media(prefers-color-scheme:dark){body{background:#17150f;color:#efe9df}a{background:#22201a;border-color:#33302a}}</style>
-</head><body>
-<h1>Due anteprime dell'hub</h1><p>Provale entrambe, poi scegli</p>
-<a href="./launcher.html"><b>1 · Home a griglia</b><span>Schermata con le tre app, tocchi e apri</span></a>
-<a href="./switch.html"><b>2 · Barra in basso</b><span>Passi tra le app dal vivo con le iconcine</span></a>
-</body></html>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Hub</title>
+<meta name="theme-color" content="#fdfcf8">
+<link rel="manifest" href="./manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Hub">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+  body{display:flex;flex-direction:column;background:#fdfcf8;font-family:-apple-system,BlinkMacSystemFont,'Inter',system-ui,sans-serif}
+  #frames{flex:1;position:relative;background:#fff;min-height:0}
+  iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;
+    opacity:0;pointer-events:none;transition:opacity .14s ease}
+  iframe.on{opacity:1;pointer-events:auto}
+  #boot{position:absolute;inset:0;display:grid;place-items:center;background:#fdfcf8}
+  #boot i{width:26px;height:26px;border:2.5px solid #e4e0d6;border-top-color:#b8492c;border-radius:50%;animation:sp .8s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  #bar{display:flex;flex:none;background:rgba(253,252,248,.94);backdrop-filter:blur(18px);
+    border-top:1px solid #e4e0d6;padding-bottom:env(safe-area-inset-bottom)}
+  .tab{flex:1;border:none;background:none;cursor:pointer;padding:7px 0 6px;
+    display:flex;flex-direction:column;align-items:center;gap:3px}
+  .tab .ic{width:40px;height:32px;border-radius:11px;display:grid;place-items:center;
+    transition:background .18s cubic-bezier(.22,1,.36,1)}
+  .tab .ic svg{width:22px;height:22px;fill:none;stroke:#a29a8c;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;transition:stroke .18s}
+  .tab .lbl{font-size:10.5px;font-weight:700;letter-spacing:.01em;color:#a29a8c;transition:color .18s}
+  .tab.on .ic svg{stroke:#fff}
+  .tab.on .lbl{color:#201c17}
+  .tab:active .ic{transform:scale(.92)}
+  @media (prefers-color-scheme:dark){
+    body{background:#17150f}
+    #boot{background:#17150f}
+    #bar{background:rgba(28,26,21,.94);border-top-color:#33302a}
+    .tab .lbl{color:#8b8378}
+    .tab.on .lbl{color:#efe9df}
+  }
+</style>
+</head>
+<body>
+  <div id="frames">
+    <div id="boot"><i></i></div>
+    <iframe id="f-tempo"   title="TEMPO"         allow="camera; clipboard-write; fullscreen"></iframe>
+    <iframe id="f-cicogna" title="Cicogna"       allow="camera; clipboard-write; fullscreen"></iframe>
+    <iframe id="f-migross" title="Spesa Migross" allow="camera; microphone; clipboard-write; fullscreen"></iframe>
+  </div>
+  <nav id="bar"></nav>
+<script>
+  var APPS=[
+    {k:'tempo',name:'TEMPO',color:'#b8492c',url:'https://fedesynthesis.github.io/tempo/',
+      icon:'<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M8 12.5l2.5 2.5L16 9"/>'},
+    {k:'cicogna',name:'Cicogna',color:'#d8688a',url:'https://fedesynthesis.github.io/Cicogna2/',
+      icon:'<path d="M12 20.5S4 15.5 4 9.8C4 7 6 5.3 8.2 5.3c1.6 0 3 .9 3.8 2.3.8-1.4 2.2-2.3 3.8-2.3C20 5.3 20 7 20 9.8c0 5.7-8 10.7-8 10.7z"/>'},
+    {k:'migross',name:'Spesa',color:'#6b8f71',url:'https://fedesynthesis.github.io/migro/',
+      icon:'<path d="M3 4h2.2l2 12h10.2l2-8.5H6.5"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/>'}
+  ];
+  var LAST='hub_last_app';
+  var bar=document.getElementById('bar'), boot=document.getElementById('boot');
+
+  bar.innerHTML=APPS.map(function(a){
+    return '<button class="tab" data-k="'+a.k+'" aria-label="'+a.name+'">'
+      +'<span class="ic"><svg viewBox="0 0 24 24">'+a.icon+'</svg></span>'
+      +'<span class="lbl">'+a.name+'</span></button>';
+  }).join('');
+
+  function show(k){
+    var app=null;
+    APPS.forEach(function(a){
+      var f=document.getElementById('f-'+a.k), t=bar.querySelector('[data-k="'+a.k+'"]'), on=(a.k===k);
+      if(on){ app=a; if(!f.src){ f.src=a.url; f.addEventListener('load',function(){ boot.style.display='none'; },{once:true}); } else { boot.style.display='none'; } }
+      f.classList.toggle('on',on);
+      t.classList.toggle('on',on);
+      t.querySelector('.ic').style.background = on ? a.color : 'transparent';
+    });
+    if(app){
+      try{ localStorage.setItem(LAST,k); }catch(e){}
+      var m=document.querySelector('meta[name=theme-color]');
+      if(m) m.setAttribute('content', app.color);
+    }
+  }
+
+  bar.addEventListener('click',function(e){
+    var b=e.target.closest('[data-k]');
+    if(b) show(b.dataset.k);
+  });
+
+  var start='tempo';
+  try{ var s=localStorage.getItem(LAST); if(s && APPS.some(function(a){return a.k===s;})) start=s; }catch(e){}
+  show(start);
+  setTimeout(function(){ boot.style.display='none'; }, 6000);   // non restare mai bloccato sul caricamento
+
+  if('serviceWorker' in navigator){ window.addEventListener('load',function(){ navigator.serviceWorker.register('./sw.js').catch(function(){}); }); }
+</script>
+</body>
+</html>
