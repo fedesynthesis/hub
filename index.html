@@ -76,9 +76,10 @@
       var d=f.contentDocument; if(!d || !d.head) return;
       if(d.getElementById('hub-scrollfix')) return;
       var s=d.createElement('style'); s.id='hub-scrollfix';
-      s.textContent='html{height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}'
-        +'body{height:auto!important;min-height:100%;-webkit-overflow-scrolling:touch}'
-        +'body.lock{overflow:hidden}';
+      /* NIENTE height/overflow su html: creare uno scroll container sul documento
+         impedisce al dito di scorrere dentro l'iframe (aveva rotto Cicogna).
+         Qui solo lo scorrimento "morbido"; le app scrollano il proprio documento. */
+      s.textContent='html,body{-webkit-overflow-scrolling:touch}';
       d.head.appendChild(s);
     }catch(e){}
   }
