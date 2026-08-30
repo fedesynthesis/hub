@@ -69,11 +69,27 @@
       +'<span class="lbl">'+a.name+'</span></button>';
   }).join('');
 
+  /* Le app stanno sullo stesso dominio: sistemo lo scroll dall'interno.
+     Su iOS il tocco non scorre dentro un iframe se il documento non ha lo scroll "touch". */
+  function fixScroll(f){
+    try{
+      var d=f.contentDocument; if(!d || !d.head) return;
+      if(d.getElementById('hub-scrollfix')) return;
+      var s=d.createElement('style'); s.id='hub-scrollfix';
+      s.textContent='html{height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}'
+        +'body{height:auto!important;min-height:100%;-webkit-overflow-scrolling:touch}'
+        +'body.lock{overflow:hidden}';
+      d.head.appendChild(s);
+    }catch(e){}
+  }
+
   function show(k){
     var app=null;
     APPS.forEach(function(a){
       var f=document.getElementById('f-'+a.k), t=bar.querySelector('[data-k="'+a.k+'"]'), on=(a.k===k);
-      if(on){ app=a; if(!f.src){ f.src=a.url; f.addEventListener('load',function(){ boot.style.display='none'; },{once:true}); } else { boot.style.display='none'; } }
+      if(on){ app=a;
+        if(!f.src){ f.src=a.url; f.addEventListener('load',function(){ boot.style.display='none'; fixScroll(f); },{once:true}); }
+        else { boot.style.display='none'; fixScroll(f); } }
       f.classList.toggle('on',on);
       t.classList.toggle('on',on);
       t.querySelector('.ic').style.background = on ? a.color : 'transparent';
