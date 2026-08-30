@@ -1,5 +1,5 @@
 /* Hub service worker — solo il guscio (le app dentro gli iframe hanno i loro SW) */
-const CACHE='hub-v7';
+const CACHE='hub-v8';
 const CORE=['./','./index.html','./icon.svg','./icon-180.png','./icon-192.png','./icon-512.png','./bar.js'];
 
 self.addEventListener('install',e=>{

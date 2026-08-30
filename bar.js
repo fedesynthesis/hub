@@ -44,7 +44,19 @@
     + '#hubbar a.on svg{stroke:var(--hubc)}#hubbar a.on span{color:var(--hubc)}'
     + 'body{padding-bottom:calc(' + H + 'px + env(safe-area-inset-bottom))!important}'
     + '@media (prefers-color-scheme:dark){#hubbar{background:rgba(28,26,21,.96);border-top-color:rgba(255,255,255,.12)}'
-    + '#hubbar a svg{stroke:#8b8378}#hubbar a span{color:#8b8378}}';
+    + '#hubbar a svg{stroke:#8b8378}#hubbar a span{color:#8b8378}}'
+    /* iOS ignora l'orientamento dichiarato nel manifest: in orizzontale, sui telefoni,
+       copro l'app e chiedo di rimettere in verticale (su monitor non compare mai) */
+    + '#hubrot{display:none}'
+    + '@media (orientation:landscape) and (max-height:500px) and (pointer:coarse){'
+    + '#hubrot{display:flex;position:fixed;inset:0;z-index:2147483600;flex-direction:column;'
+    + 'align-items:center;justify-content:center;gap:14px;background:#faf9f5;color:#4a443a;'
+    + 'font-family:-apple-system,system-ui,sans-serif;text-align:center;padding:24px}'
+    + '#hubrot b{font-size:17px;font-weight:600}#hubrot span{font-size:14px;opacity:.75}'
+    + '#hubrot svg{width:44px;height:44px;fill:none;stroke:#9a938a;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}'
+    + '#hubbar{display:none}}'
+    + '@media (orientation:landscape) and (max-height:500px) and (pointer:coarse){'
+    + 'body{padding-bottom:0!important}}';
 
   /* elementi ancorati in basso che altrimenti finirebbero sotto la barra, app per app */
   var lift = 'calc(' + H + 'px + env(safe-area-inset-bottom))';
@@ -56,6 +68,9 @@
     cicogna: '.foot{bottom:' + lift + '!important}'
            + '.toast{bottom:calc(' + H + 'px + 84px)!important}',
     migross: '#fabContainer{bottom:' + lift + '!important}'
+           // i pannelli che salgono dal basso: i tasti in fondo finivano sotto la barra
+           + '.modal,.vcard{padding-bottom:calc(28px + ' + H + 'px + env(safe-area-inset-bottom))!important}'
+           + '.modal,.vcard{max-height:calc(88dvh - ' + H + 'px)!important}'
   };
   if (current && perApp[current]) css += perApp[current];
 
@@ -74,4 +89,11 @@
       + '><svg viewBox="0 0 24 24">' + a.icon + '</svg><span>' + a.name + '</span></a>';
   }).join('');
   document.body.appendChild(nav);
+
+  var rot = document.createElement('div');
+  rot.id = 'hubrot';
+  rot.innerHTML = '<svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/>'
+    + '<path d="M3.5 15a9 9 0 0 0 3 5"/><path d="M20.5 9a9 9 0 0 0-3-5"/></svg>'
+    + '<b>Gira il telefono in verticale</b><span>L\'app si usa in verticale</span>';
+  document.body.appendChild(rot);
 })();
