@@ -25,17 +25,26 @@
   if (current === 'tempo') document.body.classList.add('embed');
 
   var css = ''
+    /* reset: ogni app ha font e interlinea propri, qui vanno neutralizzati
+       o la barra risulta impaginata in modo diverso da un'app all'altra */
+    + '#hubbar,#hubbar *{box-sizing:border-box;margin:0;padding:0;border:0;'
+    + 'font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-style:normal;'
+    + 'line-height:normal;letter-spacing:normal;text-transform:none;text-indent:0;'
+    + 'vertical-align:baseline;background:none;text-decoration:none}'
     + '#hubbar{position:fixed;left:0;right:0;bottom:0;height:calc(' + H + 'px + env(safe-area-inset-bottom));'
-    + 'z-index:2147483000;display:flex;padding-bottom:env(safe-area-inset-bottom);'
+    + 'z-index:2147483000;display:flex;align-items:stretch;padding-bottom:env(safe-area-inset-bottom);'
     + 'background:rgba(250,249,245,.96);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);'
-    + 'border-top:1px solid rgba(0,0,0,.09);box-sizing:border-box}'
+    + 'border-top:1px solid rgba(0,0,0,.09)}'
     + '#hubbar a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;'
-    + 'text-decoration:none;-webkit-tap-highlight-color:transparent}'
-    + '#hubbar a svg{width:21px;height:21px;fill:none;stroke:#9a938a;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}'
-    + '#hubbar a span{font-size:10px;font-weight:700;color:#9a938a;font-family:-apple-system,system-ui,sans-serif;letter-spacing:.01em}'
+    + '-webkit-tap-highlight-color:transparent}'
+    + '#hubbar a svg{display:block;width:21px;height:21px;flex:none;fill:none;stroke:#9a938a;stroke-width:2;'
+    + 'stroke-linecap:round;stroke-linejoin:round}'
+    + '#hubbar a span{display:block;height:12px;font-size:10px;line-height:12px;font-weight:700;color:#9a938a;'
+    + 'letter-spacing:.01em;white-space:nowrap}'
     + '#hubbar a.on svg{stroke:var(--hubc)}#hubbar a.on span{color:var(--hubc)}'
     + 'body{padding-bottom:calc(' + H + 'px + env(safe-area-inset-bottom))!important}'
-    + '@media (prefers-color-scheme:dark){#hubbar{background:rgba(28,26,21,.96);border-top-color:rgba(255,255,255,.12)}}';
+    + '@media (prefers-color-scheme:dark){#hubbar{background:rgba(28,26,21,.96);border-top-color:rgba(255,255,255,.12)}'
+    + '#hubbar a svg{stroke:#8b8378}#hubbar a span{color:#8b8378}}';
 
   /* elementi ancorati in basso che altrimenti finirebbero sotto la barra, app per app */
   var lift = 'calc(' + H + 'px + env(safe-area-inset-bottom))';
