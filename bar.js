@@ -9,8 +9,8 @@
   var APPS = [
     { k:'tempo',   name:'TEMPO',  color:'#b8492c', path:'/tempo/',
       icon:'<rect x="3" y="3" width="18" height="18" rx="5"/><path d="M8 12.5l2.5 2.5L16 9"/>' },
-    { k:'cicogna', name:'Cicogna',color:'#d8688a', path:'/Cicogna2/',
-      icon:'<path d="M12 20.5S4 15.5 4 9.8C4 7 6 5.3 8.2 5.3c1.6 0 3 .9 3.8 2.3.8-1.4 2.2-2.3 3.8-2.3C20 5.3 20 7 20 9.8c0 5.7-8 10.7-8 10.7z"/>' },
+    { k:'nido',    name:'Nido',   color:'#4fa269', path:'/Cicogna2/',
+      icon:'<path d="M12 20c-4.4 0-7.6-2.8-7.6-6.4 0-2.2 1.2-3.8 3-4.8.6-2.2 2.2-3.6 4.6-3.6s4 1.4 4.6 3.6c1.8 1 3 2.6 3 4.8 0 3.6-3.2 6.4-7.6 6.4z"/><circle cx="9.4" cy="13" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.6" cy="13" r="1.1" fill="currentColor" stroke="none"/><path d="M10.4 16.2c1 .9 2.2.9 3.2 0"/><path d="M12 6.1c.2-1.2 1-1.9 2-1.8"/>' },
     { k:'migross', name:'Spesa',  color:'#6b8f71', path:'/migro/',
       icon:'<path d="M3 4h2.2l2 12h10.2l2-8.5H6.5"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/>' }
   ];
@@ -65,8 +65,10 @@
            + '.fab{bottom:calc(' + H + 'px + var(--nav-h,64px) + 18px + env(safe-area-inset-bottom))!important}'
            + '.sheet,.wiz{bottom:' + lift + '!important}'
            + '.toast{bottom:calc(' + H + 'px + var(--nav-h,64px) + 26px + env(safe-area-inset-bottom))!important}',
-    cicogna: '.foot{bottom:' + lift + '!important}'
-           + '.toast{bottom:calc(' + H + 'px + 84px)!important}',
+    nido:    '.toast{bottom:calc(' + H + 'px + 44px)!important}'
+           // il foglio di inserimento non deve finire sotto la barra
+           + '.sheet{padding-bottom:calc(28px + ' + H + 'px + env(safe-area-inset-bottom))!important}'
+           + '.sheet{max-height:calc(88dvh - ' + H + 'px)!important}',
     migross: '#fabContainer{bottom:' + lift + '!important}'
            // i pannelli che salgono dal basso: i tasti in fondo finivano sotto la barra
            + '.modal,.vcard{padding-bottom:calc(28px + ' + H + 'px + env(safe-area-inset-bottom))!important}'
